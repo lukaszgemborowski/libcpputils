@@ -1,13 +1,13 @@
 #ifndef STATICFILEREADER_H
 #define STATICFILEREADER_H
 
-#include <fstream>
+#include <istream>
 #include <type_traits>
 #include <tuple>
 
 class static_file_reader {
 public:
-    static_file_reader(std::ifstream &&stream) :
+    static_file_reader(std::istream &&stream) :
         stream(std::move(stream))
     {}
 
@@ -27,8 +27,7 @@ public:
     }
 
 private:
-    std::ifstream stream;
+    std::istream stream;
 };
 
 #endif // STATICFILEREADER_H
-

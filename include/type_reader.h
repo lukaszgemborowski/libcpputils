@@ -1,7 +1,7 @@
 #ifndef TYPE_READER_H
 #define TYPE_READER_H
 
-#include <fstream>
+#include <istream>
 
 namespace reader
 {
@@ -9,7 +9,7 @@ namespace reader
 template<typename T, int S>
 class array_reader {
 public:
-    void read_from_stream(std::ifstream &stream) {
+    void read_from_stream(std::istream &stream) {
         stream.read((char *)&buffer[0], sizeof(T) * S);
     }
 
@@ -36,4 +36,3 @@ public:
 }
 
 #endif // TYPE_READER_H
-
