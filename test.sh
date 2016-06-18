@@ -8,14 +8,19 @@ function build_gtest {
     popd
 }
 
+function build_lib {
+	g++ src/*.cc -o temp/libcpputils.so -shared -fPIC -Iinclude -std=c++14 -lstdc++fs
+}
+
 function build_tests {
-    g++ tests/*.cc -o temp/tests -Ltemp -Iinclude -Iexternal/googletest/googletest/include -lgtest_main -lgtest -pthread
+    g++ tests/*.cc -o temp/tests -Ltemp -Iinclude -Iexternal/googletest/googletest/include -lgtest_main -lgtest -lcpputils -pthread -std=c++14
 }
 
 function run_tests {
-    temp/tests
+    LD_LIBRARY_PATH=temp ./temp/tests
 }
 
+build_lib
 build_gtest
 build_tests
 run_tests
