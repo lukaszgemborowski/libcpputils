@@ -3,7 +3,7 @@
 
 #include <istream>
 
-namespace reader
+namespace cpputils
 {
 
 template<typename T, int S>

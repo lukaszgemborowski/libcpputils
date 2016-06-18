@@ -2,9 +2,11 @@
 #include "type_reader.h"
 #include <sstream>
 
+using namespace cpputils;
+
 TEST(array_reader_tests, can_be_created)
 {
-	reader::array_reader<int, 1>();
+	array_reader<int, 1>();
 }
 
 TEST(array_reader_tests, read_int_array)
@@ -15,7 +17,7 @@ TEST(array_reader_tests, read_int_array)
 	stream.write((char *)&input[0], sizeof (input));
 
 	/* now read array of three ints from the stream */
-	reader::array_reader<int, 3> int_reader;
+	array_reader<int, 3> int_reader;
 	int_reader.read_from_stream(stream);
 
 	/* check the result */

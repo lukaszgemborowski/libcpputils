@@ -5,6 +5,9 @@
 #include <type_traits>
 #include <tuple>
 
+namespace cpputils
+{
+
 class static_file_reader {
 public:
     static_file_reader(std::istream &&stream) :
@@ -29,5 +32,7 @@ public:
 private:
     std::istream stream;
 };
+
+}
 
 #endif // STATICFILEREADER_H
