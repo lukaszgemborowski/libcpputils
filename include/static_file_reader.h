@@ -43,7 +43,7 @@ private:
 
     template<std::size_t I = 0, typename T, size_t N>
     typename std::enable_if<I == N, void>::type
-    extract_array(T (&t)[N]) {}
+    extract_array(T (&)[N]) {}
 
     template<std::size_t I = 0, typename T, size_t N>
     typename std::enable_if<I < N, void>::type
