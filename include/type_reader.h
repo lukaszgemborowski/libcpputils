@@ -55,18 +55,33 @@ private:
     std::vector<T, Allocator> buffer;
 };
 
-/* sizeof POD type */
+/* forward declarations needed by calculate_size(std::tuple<Tp...> &t) */
 template<std::size_t I = 0, typename... Tp>
-typename std::enable_if<std::is_pod<typename std::tuple_element<I, std::tuple<Tp...>>::type>::value, int>::type
-calculate_size(std::tuple<Tp...>&) {
-    return sizeof(typename std::tuple_element<I, std::tuple<Tp...>>::type);
+typename std::enable_if<I == sizeof...(Tp), int>::type
+block_size(std::tuple<Tp...>&);
+
+template<std::size_t I = 0, typename... Tp>
+typename std::enable_if<I < sizeof...(Tp), int>::type
+block_size(std::tuple<Tp...>& t);
+
+/* sizeof POD type */
+template<typename T>
+typename std::enable_if<std::is_pod<T>::value, int>::type
+calculate_size(T &) {
+    return sizeof(T);
 }
 
 /* sizeof non-pod type, require to implement size method */
-template<std::size_t I = 0, typename... Tp>
-typename std::enable_if<!std::is_pod<typename std::tuple_element<I, std::tuple<Tp...>>::type>::value, int>::type
-calculate_size(std::tuple<Tp...>& t) {
-    return std::get<I>(t).size();
+template<typename T>
+typename std::enable_if<!std::is_pod<T>::value, int>::type
+calculate_size(T &t) {
+    return t.size();
+}
+
+/* recursive sizeof a tuple */
+template<typename... Tp>
+int calculate_size(std::tuple<Tp...> &t) {
+    return block_size(t);
 }
 
 template<std::size_t I = 0, typename... Tp>
@@ -76,7 +91,7 @@ block_size(std::tuple<Tp...>&) { return 0; }
 template<std::size_t I = 0, typename... Tp>
 typename std::enable_if<I < sizeof...(Tp), int>::type
 block_size(std::tuple<Tp...>& t) {
-    return calculate_size<I>(t) + block_size<I + 1, Tp...>(t);
+    return calculate_size(std::get<I>(t)) + block_size<I + 1, Tp...>(t);
 }
 
 }

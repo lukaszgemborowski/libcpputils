@@ -23,3 +23,10 @@ TEST(block_size_tests, mixed_tuple_size)
 
     ASSERT_EQ(sizeof(int) + (sizeof(int) * 9), block_size(mixed_def));
 }
+
+TEST(block_size_tests, tuple_in_tuple)
+{
+    std::tuple<int, std::tuple<int>> tuple_in_tuple_def;
+
+    ASSERT_EQ(2 * sizeof(int), block_size(tuple_in_tuple_def));
+}
