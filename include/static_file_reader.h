@@ -27,16 +27,17 @@ public:
         read<I + 1, Tp...>(t);
     }
 
+    S&& get_stream() {
+        return std::move(stream);
+    }
+
+private:
     template<typename... Tp> void extract(std::tuple<Tp...>& t) {
         read(t);
     }
 
     template<typename T> void extract(T &t) {
         t.read_from_stream(stream);
-    }
-
-    S&& get_stream() {
-        return std::move(stream);
     }
 
 private:
