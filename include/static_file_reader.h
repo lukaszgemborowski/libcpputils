@@ -60,14 +60,14 @@ private:
 
     // extract integral type
     template<typename T>
-    typename std::enable_if<std::is_integral<T>::value, void>::type
+    typename std::enable_if<std::is_pod<T>::value, void>::type
     extract(T &t) {
         stream.read((char *)&t, sizeof(T));
     }
 
     // extract custom type
     template<typename T>
-    typename std::enable_if<!std::is_integral<T>::value, void>::type
+    typename std::enable_if<!std::is_pod<T>::value, void>::type
     extract(T &t) {
         t.read_from_stream(stream);
     }

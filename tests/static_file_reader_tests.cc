@@ -39,6 +39,23 @@ TEST(static_file_reader_tests, read_arrays)
 	ASSERT_EQ(3, std::get<0>(buffer)[2]);
 }
 
+TEST(static_file_reader_tests, read_real_numbers)
+{
+	float input[] = {1.2f, 3.4f, 5.6f};
+	std::stringstream stream;
+	stream.write((char *)&input[0], sizeof (input));
+
+	static_file_reader<std::stringstream> reader(std::move(stream));
+
+	std::tuple<float[3]> buffer;
+
+	reader.read(buffer);
+
+	ASSERT_EQ(1.2f, std::get<0>(buffer)[0]);
+	ASSERT_EQ(3.4f, std::get<0>(buffer)[1]);
+	ASSERT_EQ(5.6f, std::get<0>(buffer)[2]);
+}
+
 TEST(static_file_reader_tests, read_simple_tuple)
 {
 	// prepare a stream of 3 ints
