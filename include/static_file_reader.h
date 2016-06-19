@@ -31,6 +31,10 @@ public:
         return std::move(stream);
     }
 
+    bool eof() {
+        return stream.eof();
+    }
+
 private:
     template<typename... Tp> void extract(std::tuple<Tp...>& t) {
         read(t);
