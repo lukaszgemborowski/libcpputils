@@ -14,7 +14,7 @@ public:
     }
 
     int size() const {
-        return S;
+        return S * sizeof(T);
     }
 
     T value(int index) const {
@@ -46,9 +46,23 @@ public:
         return buffer[index];
     }
 
+    int size() const {
+        return sizeof(T) * buffer.size();
+    }
+
 private:
     std::vector<T, Allocator> buffer;
 };
+
+template<std::size_t I = 0, typename... Tp>
+typename std::enable_if<I == sizeof...(Tp), int>::type
+block_size(std::tuple<Tp...>&) { return 0; }
+
+template<std::size_t I = 0, typename... Tp>
+typename std::enable_if<I < sizeof...(Tp), int>::type
+block_size(std::tuple<Tp...>& t) {
+    return std::get<I>(t).size() + block_size<I + 1, Tp...>(t);
+}
 
 }
 
