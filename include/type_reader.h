@@ -33,6 +33,23 @@ public:
     }
 };
 
+template<typename T, typename Allocator = std::allocator<T>>
+class vector_reader {
+public:
+    vector_reader(int size) : buffer(size) {}
+
+    void read_from_stream(std::istream &stream) {
+        stream.read((char *)buffer.data(), sizeof(T) * buffer.size());
+    }
+
+    T value(int index) const {
+        return buffer[index];
+    }
+
+private:
+    std::vector<T, Allocator> buffer;
+};
+
 }
 
 #endif // TYPE_READER_H

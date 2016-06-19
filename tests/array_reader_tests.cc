@@ -25,3 +25,19 @@ TEST(array_reader_tests, read_int_array)
 	ASSERT_EQ(2, int_reader.value(1));
 	ASSERT_EQ(3, int_reader.value(2));
 }
+
+TEST(reader_tests, vector_reader_test)
+{
+	/* prepare a stream of 3 ints */
+	int input[] = {1, 2, 3};
+	std::stringstream stream;
+	stream.write((char *)&input[0], sizeof (input));
+
+	vector_reader<int> reader(3);
+	reader.read_from_stream(stream);
+
+	/* check the result */
+	ASSERT_EQ(1, reader.value(0));
+	ASSERT_EQ(2, reader.value(1));
+	ASSERT_EQ(3, reader.value(2));
+}
