@@ -2,6 +2,7 @@
 #define TYPE_READER_H
 
 #include <istream>
+#include <tuple>
 
 namespace cpputils
 {
@@ -54,6 +55,20 @@ private:
     std::vector<T, Allocator> buffer;
 };
 
+/* sizeof POD type */
+template<std::size_t I = 0, typename... Tp>
+typename std::enable_if<std::is_pod<typename std::tuple_element<I, std::tuple<Tp...>>::type>::value, int>::type
+calculate_size(std::tuple<Tp...>&) {
+    return sizeof(typename std::tuple_element<I, std::tuple<Tp...>>::type);
+}
+
+/* sizeof non-pod type, require to implement size method */
+template<std::size_t I = 0, typename... Tp>
+typename std::enable_if<!std::is_pod<typename std::tuple_element<I, std::tuple<Tp...>>::type>::value, int>::type
+calculate_size(std::tuple<Tp...>& t) {
+    return std::get<I>(t).size();
+}
+
 template<std::size_t I = 0, typename... Tp>
 typename std::enable_if<I == sizeof...(Tp), int>::type
 block_size(std::tuple<Tp...>&) { return 0; }
@@ -61,7 +76,7 @@ block_size(std::tuple<Tp...>&) { return 0; }
 template<std::size_t I = 0, typename... Tp>
 typename std::enable_if<I < sizeof...(Tp), int>::type
 block_size(std::tuple<Tp...>& t) {
-    return std::get<I>(t).size() + block_size<I + 1, Tp...>(t);
+    return calculate_size<I>(t) + block_size<I + 1, Tp...>(t);
 }
 
 }
