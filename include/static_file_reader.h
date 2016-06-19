@@ -36,11 +36,39 @@ public:
     }
 
 private:
+    // extract a sub-tuple
     template<typename... Tp> void extract(std::tuple<Tp...>& t) {
         read(t);
     }
 
-    template<typename T> void extract(T &t) {
+    template<std::size_t I = 0, typename T, size_t N>
+    typename std::enable_if<I == N, void>::type
+    extract_array(T (&t)[N]) {}
+
+    template<std::size_t I = 0, typename T, size_t N>
+    typename std::enable_if<I < N, void>::type
+    extract_array(T (&t)[N]) {
+        extract(t[I]);
+        extract_array<I + 1, T, N>(t);
+    }
+
+    // extract array
+    template<typename T, size_t N> void
+    extract(T (&t)[N]) {
+        extract_array(t);
+    }
+
+    // extract integral type
+    template<typename T>
+    typename std::enable_if<std::is_integral<T>::value, void>::type
+    extract(T &t) {
+        stream.read((char *)&t, sizeof(T));
+    }
+
+    // extract custom type
+    template<typename T>
+    typename std::enable_if<!std::is_integral<T>::value, void>::type
+    extract(T &t) {
         t.read_from_stream(stream);
     }
 

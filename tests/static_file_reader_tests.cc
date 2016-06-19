@@ -5,14 +5,48 @@
 
 using namespace cpputils;
 
-TEST(static_file_reader_tests, read_simple_tuple)
+TEST(static_file_reader_tests, read_integral_tuple)
 {
-	/* prepare a stream of 3 ints */
 	int input[] = {1, 2, 3};
 	std::stringstream stream;
 	stream.write((char *)&input[0], sizeof (input));
 
-	/* now read array of three ints from the stream */
+	static_file_reader<std::stringstream> reader(std::move(stream));
+
+	std::tuple<int, int, int> buffer;
+
+	reader.read(buffer);
+
+	ASSERT_EQ(1, std::get<0>(buffer));
+	ASSERT_EQ(2, std::get<1>(buffer));
+	ASSERT_EQ(3, std::get<2>(buffer));
+}
+
+TEST(static_file_reader_tests, read_arrays)
+{
+	int input[] = {1, 2, 3};
+	std::stringstream stream;
+	stream.write((char *)&input[0], sizeof (input));
+
+	static_file_reader<std::stringstream> reader(std::move(stream));
+
+	std::tuple<int [3]> buffer;
+
+	reader.read(buffer);
+
+	ASSERT_EQ(1, std::get<0>(buffer)[0]);
+	ASSERT_EQ(2, std::get<0>(buffer)[1]);
+	ASSERT_EQ(3, std::get<0>(buffer)[2]);
+}
+
+TEST(static_file_reader_tests, read_simple_tuple)
+{
+	// prepare a stream of 3 ints
+	int input[] = {1, 2, 3};
+	std::stringstream stream;
+	stream.write((char *)&input[0], sizeof (input));
+
+	// now read array of three ints from the stream
 	static_file_reader<std::stringstream> reader(std::move(stream));
 
 	std::tuple<
@@ -21,7 +55,7 @@ TEST(static_file_reader_tests, read_simple_tuple)
 
 	reader.read(buffer);
 
-	/* check */
+	// check
 	ASSERT_EQ(1, std::get<0>(buffer).value(0));
 	ASSERT_EQ(2, std::get<0>(buffer).value(1));
 	ASSERT_EQ(3, std::get<1>(buffer).value(0));
@@ -29,12 +63,12 @@ TEST(static_file_reader_tests, read_simple_tuple)
 
 TEST(static_file_reader_tests, multi_tuple_definition)
 {
-	/* prepare a stream of 3 ints */
+	// prepare a stream of 3 ints
 	int input[] = {1, 2, 3};
 	std::stringstream stream;
 	stream.write((char *)&input[0], sizeof (input));
 
-	/* now read array of three ints from the stream */
+	// now read array of three ints from the stream
 	static_file_reader<std::stringstream> reader(std::move(stream));
 
 	typedef std::tuple<array_reader<int, 2>> first;
@@ -44,7 +78,7 @@ TEST(static_file_reader_tests, multi_tuple_definition)
 
 	reader.read(buffer);
 
-	/* check */
+	// check
 	first f = std::get<0>(buffer);
 	second s = std::get<1>(buffer);
 
