@@ -35,7 +35,7 @@ public:
 		t.read_from_stream(stream);
 	}
 
-    std::istream&& get_stream() {
+    S&& get_stream() {
         return std::move(stream);
     }
 
